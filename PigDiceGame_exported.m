@@ -140,7 +140,7 @@ properties (Access = private)
             app.TurnNumberLabel.Text = sprintf('Turn Number: %d', app.turn);
             app.uploadInProgress = true;
             app.updateGameState();
-            app.uploadIngress = false;
+            app.uploadInProgress = false;
         end
 
         % Selection changed function: PlayerSelectButtonGroup
