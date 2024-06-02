@@ -3,7 +3,7 @@ classdef PigDiceGame_exported < matlab.apps.AppBase
     % Properties that correspond to app components
     properties (Access = public)
         UIFigure                 matlab.ui.Figure
-        PlayerNumberLabel        matlab.ui.control.Label
+        TurnNumberLabel          matlab.ui.control.Label
         PassButton               matlab.ui.control.Button
         PlayerSelectButtonGroup  matlab.ui.container.ButtonGroup
         Player4Button            matlab.ui.control.RadioButton
@@ -36,7 +36,6 @@ properties (Access = private)
         function loadGameState(app)
             fprintf("\nloadGameState currentPlayer=%d turn=%d", app.currentPlayer, app.turn);
             if app.currentPlayer == app.turn
-               app.PlayerNumberLabel.Text = sprintf('Player Number: %d', app.currentPlayer);
                 return;
             end
             url = sprintf('https://api.thingspeak.com/channels/%s/feeds.json?api_key=%s&results=1', app.channelID, app.readAPIKey);
@@ -47,7 +46,8 @@ properties (Access = private)
                 app.players{2}.Value = str2double(feed.field2);
                 app.players{3}.Value = str2double(feed.field3);
                 app.players{4}.Value = str2double(feed.field4);
-                app.turn = str2double(feed.field5);            % 
+                app.turn = str2double(feed.field5);    
+                app.TurnNumberLabel.Text = sprintf('Turn Number: %d', app.turn);
             else
                 app.turn = 1;
                 app.currentPlayer = 1;
@@ -132,11 +132,12 @@ properties (Access = private)
 
         % Button pushed function: PassButton
         function PassButtonPushed(app, event)
-            app.loadGameState();
+
             if app.currentPlayer ~= app.turn
                 return;
             end
             app.turn = mod(app.turn,4)+1;
+            app.TurnNumberLabel.Text = sprintf('Turn Number: %d', app.turn);
             app.updateGameState();
         end
 
@@ -239,10 +240,10 @@ properties (Access = private)
             app.PassButton.Position = [262 63 100 22];
             app.PassButton.Text = 'Pass';
 
-            % Create PlayerNumberLabel
-            app.PlayerNumberLabel = uilabel(app.UIFigure);
-            app.PlayerNumberLabel.Position = [34 23 213 22];
-            app.PlayerNumberLabel.Text = 'Player Number: ';
+            % Create TurnNumberLabel
+            app.TurnNumberLabel = uilabel(app.UIFigure);
+            app.TurnNumberLabel.Position = [34 23 213 22];
+            app.TurnNumberLabel.Text = 'Turn Number: ';
 
             % Show the figure after all components are created
             app.UIFigure.Visible = 'on';
