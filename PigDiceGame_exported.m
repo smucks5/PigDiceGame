@@ -57,10 +57,17 @@ properties (Access = private)
         end
 
         function updateGameState(app)
+             
             data = [app.players{1}.Value, app.players{2}.Value, app.players{3}.Value, app.players{4}.Value, app.turn];
             url = sprintf('https://api.thingspeak.com/update?api_key=%s&field1=%d&field2=%d&field3=%d&field4=%d&field5=%d', ...
                 app.writeAPIKey, data(1), data(2), data(3), data(4), data(5));
-            webwrite(url, []);
+            fprintf("\nupdateGameState url=%s",url);
+             response = webwrite(url, []);
+             fprintf("\nupdateGameState response=%s",response);
+             while (response == "0")
+               response = webwrite(url, []);
+               fprintf("\nupdateGameState response=%s",response);
+            end
         end
 
         function playerNumber = registerPlayer(app)
@@ -89,6 +96,7 @@ properties (Access = private)
             app.currentPlayer = app.registerPlayer();  
             fprintf("\nstartupFcn currentPlayer=%d turn=%d", app.currentPlayer, app.turn);
             app.turn=1;
+            app.TurnNumberLabel.Text = sprintf('Turn Number: %d', app.turn);
             for i = 1:4
                 app.players{i}.Value = 0;
             end
