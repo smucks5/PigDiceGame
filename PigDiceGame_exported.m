@@ -41,16 +41,13 @@ properties (Access = private)
             end
             url = sprintf('https://api.thingspeak.com/channels/%s/feeds.json?api_key=%s&results=1', app.channelID, app.readAPIKey);
             data = webread(url);
-            fprintf(data);
             if ~isempty(data.feeds)
                 feed = data.feeds(end);
                 app.players{1}.Value = str2double(feed.field1);
                 app.players{2}.Value = str2double(feed.field2);
                 app.players{3}.Value = str2double(feed.field3);
                 app.players{4}.Value = str2double(feed.field4);
-                app.turn = str2double(feed.field5);
-                app.currentPlayer = app.turn;
-
+                app.turn = str2double(feed.field5);            % 
             else
                 app.turn = 1;
                 app.currentPlayer = 1;
@@ -91,6 +88,7 @@ properties (Access = private)
         function startupFcn(app)
             app.players = {app.Player1EditField, app.Player2EditField, app.Player3EditField, app.Player4EditField}; 
             app.currentPlayer = app.registerPlayer();  
+            fprintf("\nstartupFcn currentPlayer=%d turn=%d", app.currentPlayer, app.turn);
             app.turn=1;
             for i = 1:4
                 app.players{i}.Value = 0;
@@ -139,8 +137,15 @@ properties (Access = private)
                 return;
             end
             app.turn = mod(app.turn,4)+1;
-            app.currentPlayer = app.turn;
             app.updateGameState();
+        end
+
+        % Selection changed function: PlayerSelectButtonGroup
+        function PlayerSelectButtonGroupSelectionChanged(app, event)
+            fprintf("PlayerSelectButtonGroupSelectionChanged");
+            app.registerPlayer();
+            fprintf("PlayerSelectButtonGroupSelectionChanged app.currentPlayer=%d", app.currentPlayer);
+
         end
     end
 
@@ -203,6 +208,7 @@ properties (Access = private)
 
             % Create PlayerSelectButtonGroup
             app.PlayerSelectButtonGroup = uibuttongroup(app.UIFigure);
+            app.PlayerSelectButtonGroup.SelectionChangedFcn = createCallbackFcn(app, @PlayerSelectButtonGroupSelectionChanged, true);
             app.PlayerSelectButtonGroup.Title = 'Player Select';
             app.PlayerSelectButtonGroup.Position = [271 209 123 115];
 
