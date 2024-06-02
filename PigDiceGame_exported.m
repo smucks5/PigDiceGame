@@ -49,12 +49,6 @@ properties (Access = private)
                 app.players{4}.Value = str2double(feed.field4);
                 app.turn = str2double(feed.field5);    
                 app.TurnNumberLabel.Text = sprintf('Turn Number: %d', app.turn);
-            else
-                app.turn = 1;
-                app.currentPlayer = 1;
-                for i = 1:4
-                    app.players{i}.Value = 0;
-                end
             end
         end
 
@@ -94,7 +88,7 @@ properties (Access = private)
             for i = 1:4
                 app.players{i}.Value = 0;
             end
-            app.updateGameState();
+            % app.updateGameState();
             fprintf("startupFcn");
             app.gameStateTimer = timer('ExecutionMode','fixedRate','Period', 2,'TimerFcn', @(~,~)app.loadGameState);
             start(app.gameStateTimer);
