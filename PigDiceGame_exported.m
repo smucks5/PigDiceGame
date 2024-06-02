@@ -34,7 +34,7 @@ properties (Access = private)
 
     methods (Access = private)
         function loadGameState(app)
-            fprintf("loadGameState");
+            fprintf("\nloadGameState currentPlayer=%d turn=%d", app.currentPlayer, app.turn);
             if app.currentPlayer == app.turn
                app.PlayerNumberLabel.Text = sprintf('Player Number: %d', app.currentPlayer);
                 return;
