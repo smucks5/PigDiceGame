@@ -26,6 +26,7 @@ properties (Access = private)
         turn
         currentPlayer
         players
+        uploadInProgress
         channelID = '2567273'; 
         readAPIKey = '3C8G1CZ2GTRU7JGZ';
         writeAPIKey = 'NCRUDJE4B00WU9QY';
@@ -35,7 +36,7 @@ properties (Access = private)
     methods (Access = private)
         function loadGameState(app)
             fprintf("\nloadGameState currentPlayer=%d turn=%d", app.currentPlayer, app.turn);
-            if app.currentPlayer == app.turn
+            if (app.uploadInProgress  | app.currentPlayer == app.turn)
                 return;
             end
             url = sprintf('https://api.thingspeak.com/channels/%s/feeds.json?api_key=%s&results=1', app.channelID, app.readAPIKey);
@@ -132,13 +133,14 @@ properties (Access = private)
 
         % Button pushed function: PassButton
         function PassButtonPushed(app, event)
-
             if app.currentPlayer ~= app.turn
                 return;
             end
             app.turn = mod(app.turn,4)+1;
             app.TurnNumberLabel.Text = sprintf('Turn Number: %d', app.turn);
+            app.uploadInProgress = true;
             app.updateGameState();
+            app.uploadIngress = false;
         end
 
         % Selection changed function: PlayerSelectButtonGroup
