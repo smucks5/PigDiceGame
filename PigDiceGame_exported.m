@@ -88,7 +88,9 @@ properties (Access = private)
             for i = 1:4
                 app.players{i}.Value = 0;
             end
-            % app.updateGameState();
+            if (app.currentPlayer == 1) 
+                app.updateGameState();
+            end 
             fprintf("startupFcn");
             app.gameStateTimer = timer('ExecutionMode','fixedRate','Period', 2,'TimerFcn', @(~,~)app.loadGameState);
             start(app.gameStateTimer);
