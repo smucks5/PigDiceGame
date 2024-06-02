@@ -36,7 +36,10 @@ properties (Access = private)
     methods (Access = private)
         function loadGameState(app)
             fprintf("\nloadGameState currentPlayer=%d turn=%d", app.currentPlayer, app.turn);
-            if (app.uploadInProgress  | app.currentPlayer == app.turn)
+            if (app.uploadInProgress ) 
+                return;
+            end
+            if (app.currentPlayer == app.turn) 
                 return;
             end
             url = sprintf('https://api.thingspeak.com/channels/%s/feeds.json?api_key=%s&results=1', app.channelID, app.readAPIKey);
@@ -49,6 +52,7 @@ properties (Access = private)
                 app.players{4}.Value = str2double(feed.field4);
                 app.turn = str2double(feed.field5);    
                 app.TurnNumberLabel.Text = sprintf('Turn Number: %d', app.turn);
+                fprintf("\nloadGameState updated");
             end
         end
 
@@ -98,11 +102,7 @@ properties (Access = private)
 
         % Button pushed function: RolldiceButton
         function RolldiceButtonPushed(app, event)
-           
-            % if app.currentPlayer ~= app.turn
-            %     app.loadGameState();
-            %     return;
-            % end
+
              app.roll = randi(8, 1);
             activePlayer = app.players{app.currentPlayer};
             if app.roll == 1 || app.roll == 5
