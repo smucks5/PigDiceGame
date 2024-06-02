@@ -40,6 +40,7 @@ properties (Access = private)
             end
             url = sprintf('https://api.thingspeak.com/channels/%s/feeds.json?api_key=%s&results=1', app.channelID, app.readAPIKey);
             data = webread(url);
+            fprintf(data);
             if ~isempty(data.feeds)
                 feed = data.feeds(end);
                 app.players{1}.Value = str2double(feed.field1);
