@@ -34,6 +34,7 @@ properties (Access = private)
 
     methods (Access = private)
         function loadGameState(app)
+            fprintf("loadGameState");
             if app.currentPlayer == app.turn
                app.PlayerNumberLabel.Text = sprintf('Player Number: %d', app.currentPlayer);
                 return;
@@ -95,6 +96,7 @@ properties (Access = private)
                 app.players{i}.Value = 0;
             end
             app.updateGameState();
+            fprintf("startupFcn");
             app.gameStateTimer = timer('ExecutionMode','fixedRate','Period', 2,'TimerFcn', @(~,~)app.loadGameState);
             start(app.gameStateTimer);
         end
